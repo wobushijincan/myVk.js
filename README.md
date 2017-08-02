@@ -29,7 +29,8 @@
 	$.query; //获取URL上的键值对, 用法: $.query['name']. 
 	$.queryUrl();//根据$.query, hostname, pashname, hash重新生成并返回新的url
 
-	$.cookie; //获取浏览器存储的cookie值, 用法: $.cookie['name']. 
+	$.getCookie; //获取浏览器存储的cookie值, 用法: $.getCookie(name). 
+	$.setCookie; //设置浏览器存储的cookie值, 用法：$.setCookie(name, value, number).
 
 	$.browser={ //获取浏览器的各种属性:
 		device:{ //设备, 对象有以下属性, 属性值为bool值: 
