@@ -8,20 +8,20 @@
 		isLoaded:false,
 		ajaxCount: 0
 	};
-	ves=function(slt,prt) {
+	vk=function(slt,prt) {
 		if(typeof (slt)=='function') {
 			if($data.isReady) {
-				slt.call(ves);
+				slt.call(vk);
 				return;
 			}
 			$data._ready.push(slt);
 			if($data._ready.length==1) {
 				var readyTime=setInterval(function() {
-					if((ves.browser.core!='ms'||ves.browser.version<8)&&document.readyState=='interactive'||document.readyState=='complete') {
+					if((vk.browser.core!='ms'||vk.browser.version<8)&&document.readyState=='interactive'||document.readyState=='complete') {
 						clearInterval(readyTime);
 						readyTime=null;
 						for(var i=0;i<$data._ready.length;i++) {
-							$data._ready[i].call(ves);
+							$data._ready[i].call(vk);
 						}
 						$data.isReady=true;
 						delete $data._ready;
@@ -32,35 +32,36 @@
 		else return new init(slt,prt);
 	};
 
-	var $=ves;
+	var $=vk;
 
-	ves.ready=function(fun){
-		if(typeof(fun)=='function')ves(fun);
+	vk.ready=function(fun){
+		if(typeof(fun)=='function')vk(fun);
 	};
 
-	ves.loaded=function(fun){
-		if(typeof (fun)=='function') {
+	ves.loaded = function(fun) {
+		if(typeof(fun) == 'function') {
 			if($data.isLoaded) {
 				fun.call(ves);
 				return;
 			}
 			$data._loaded.push(fun);
-			if($data._loaded.length==1) {
-				ves(function(){
-					$data.images=nodeListToArray(document.images);
-					var loadTime=setInterval(function() {
-						clearInterval(loadTime);
-						loadTime=null;
-						for(var i=0;i<$data.images.length;i++){
-							if(!$data.images[i].complete)return;
-							$data.images.splice(i,1);i-=1;
+			if($data._loaded.length == 1) {
+				ves(function() {
+					$data.images = nodeListToArray(document.images);
+					var loadTime = setInterval(function() {
+						for(var i = 0; i < $data.images.length; i++) {
+							if(!$data.images[i].complete) return;
+							$data.images.splice(i, 1);
+							i -= 1;
 						}
-						for(var i=0;i<$data._loaded.length;i++) {
+						clearInterval(loadTime);
+						loadTime = null;
+						for(var i = 0; i < $data._loaded.length; i++) {
 							$data._loaded[i].call(ves);
 						}
-						$data.isLoaded=true;
+						$data.isLoaded = true;
 						delete $data._loaded;
-					},100);
+					}, 100);
 				});
 			}
 		}
@@ -92,7 +93,7 @@
 		parent: function() {
 			var arr=[];
 			for(var i=0;i<this.$.length;i++) {
-				if(this.$[i].parentNode&&this.$[i]!==ves.html[0])
+				if(this.$[i].parentNode&&this.$[i]!==vk.html[0])
 					arr.push(this.$[i].parentNode);
 			}
 			return new init(arr);
@@ -101,7 +102,7 @@
 			var arr=[];
 			for(var i=0;i<this.$.length;i++) {
 				(function() {
-					if(this.parentNode&&this!==ves.html[0]) {
+					if(this.parentNode&&this!==vk.html[0]) {
 						arr.push(this.parentNode);
 						arguments.callee.call(this.parentNode);
 					}
@@ -543,7 +544,7 @@
 			}
 			var viewModel,script;
 			for(var i=0;i<this.$.length;i++) {
-				script=ves('script',this.$[i]);
+				script=vk('script',this.$[i]);
 				script.each(function() {
 					eval(this.innerHTML);
 				});
@@ -761,7 +762,7 @@
 				for(var i=0;i<this.length;i++) {
 					it=this.$[i];
 					if(it.animateTimer){
-						ves(it)[it.animateType](it.animateData);
+						vk(it)[it.animateType](it.animateData);
 						if(it.animateComplete) it.animateComplete.call(it);
 						clearInterval(it.animateTimer);
 						delete it.animateTimer;
@@ -1305,7 +1306,7 @@
 				a3.shift();a4=a5=[];
 				if(a1[i].charAt(g)=='>') {
 					for(var d=0;d<_dom.length;d++) {
-						a5=ves(_dom[d]).children();
+						a5=vk(_dom[d]).children();
 						if(tag!='*') a5=a5.filter(tag);
 						a5=a5.$;
 						a4=a4.union(a5);
