@@ -1983,14 +1983,63 @@
 		}
 		return this;
 	};
-	String.prototype.trim=function() {
-		return this.replace(/(^[\s]+)|([\s]+$)/gi,'');
-	};
+	String.prototype.trim=function(type){
+		switch (type){
+			case 1:return this.replace(/\s+/g,"");
+			case 2:return this.replace(/(^\s*)|(\s*$)/g, "");
+			case 3:return this.replace(/(^\s*)/g, "");
+			case 4:return this.replace(/(\s*$)/g, "");
+			default:this.replace(/(^\s*)|(\s*$)/g, "");;
+		}
+	}
 	String.prototype.trimLeft=function() {
 		return this.replace(/^[\s]+/gi,'');
 	};
 	String.prototype.trimRight=function() {
 		return this.replace(/[\s]+$/gi,'');
+	};
+	String.prototype.changeCase = function(type){
+		var str = this;
+		this.ToggleCase = function(str){
+			var itemText = ""
+			str.split("").forEach(function (item) {
+					if (/^([a-z]+)/.test(item)) {
+						itemText += item.toUpperCase();
+					}else if (/^([A-Z]+)/.test(item)) {
+						itemText += item.toLowerCase();
+					}else{
+						itemText += item;
+					}
+				});
+			return itemText;
+		}
+	 
+		switch (type) {
+			case 1:
+				return str.replace(/^(\w)(\w+)/, function (v, v1, v2) {
+					return v1.toUpperCase() + v2.toLowerCase();
+				});
+			case 2:
+				return str.replace(/^(\w)(\w+)/, function (v, v1, v2) {
+					return v1.toLowerCase() + v2.toUpperCase();
+				});
+			case 3:
+				return this.ToggleCase(str);
+			case 4:
+				return str.toUpperCase();
+			case 5:
+				return str.toLowerCase();
+			default:
+				return str;
+		}
+	};
+	String.prototype.repeatStr = function(count){
+		var str = this;
+		var text = '';
+		for (var i = 0; i < count; i++) {
+			text += str;
+		}
+		return text;
 	};
 	function nodeListToArray(list) {
 		var arr=[];
