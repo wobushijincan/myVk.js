@@ -1830,35 +1830,22 @@
 		url='http://'+url;
 		return url;
 	};
-	$.setCookie=function(key,value,options) {
-		options=options||{};
-		var expires='';
-		var date=new Date();
-		if(options.expires&&(typeof options.expires=='number'||options.expires.toUTCString)) {
-			if(typeof options.expires=='number') {
-				date=new Date();
-				date.setTime(date.getTime()+(options.expires*24*60*60*1000));
-			} else {
-				date=options.expires;
-			}
-			expires=';expires='+date.toUTCString();
-		}
-		var path=options.path?';path='+options.path:'';
-		var domain=options.domain?';domain='+options.domain:'';
-		var secure=options.secure?';secure':'';
-		if(value==null) {
-			date=new Date();date.setTime(date.getTime-10000);
-			expires=';expires='+date.toUTCString();
-			document.cookie=[key,'=','',expires,path,domain,secure].join('');
-			delete $.cookie[key];
-		}
-		else {
-			document.cookie=[key,'=',encodeURIComponent(value),expires,path,domain,secure].join('');
-			if(document.cookie=='') return $;
-			$.cookie[key]=value;
-		}
-		return $;
+	$.setCookie=function(c_name, value, expiredays) {
+		var exdate = new Date();
+		exdate.setDate(exdate.getDate() + expiredays);
+		document.cookie = c_name + '=' + escape(value) + ((expiredays == null) ? '' : ';expiredays=' + exdate.toGMTString());
 	};
+	$.getCookie = function(c_name,value){
+		if(document.cookie.length > 0){
+			c_start = document.cookie.indexOf(c_name + '=');
+			if(c_start != -1){
+				c_start = c_start + c_name.length + 1;
+				c_end = document.cookie.indexOf(';', c_start);
+				return unescape(document.cookie.substring(c_start, c_end));
+			}
+			return '';
+		}
+	}
 	$.addRule=function(selector, rules, style, index) {
 		var cssRules=$.browser.core=='ms'?'rules':'cssRules';
 		if(document.styleSheets.length==0||!document.styleSheets[document.styleSheets.length-1][cssRules]){
@@ -2028,20 +2015,6 @@
 			}
 			if($.query._)
 				delete $.query._;
-		}
-		if(document.cookie&&document.cookie!='') {
-			var name,val=null;
-			qs=document.cookie.split(/;[\s]*/gi);
-			for(var i=0;i<qs.length;i++) {
-				index=qs[i].trim().indexOf('=');
-				if(index<0) { name=qs[i];val=''; }
-				else {
-					name=qs[i].substring(0,index).trim();
-					val=qs[i].substr(index+1);
-					if(val!='') val=decodeURIComponent(val);
-				}
-				if(name.length>0) $.cookie[name]=val;
-			}
 		}
 		var ua=window.navigator.userAgent.toLowerCase();
 		if(ua.indexOf('trident')> -1) $.browser.core='ms';
