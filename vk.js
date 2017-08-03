@@ -1903,6 +1903,26 @@
 		}
 		return style;
 	};
+	$.isNumberic = function(num){
+		return !isNaN(parseFloat(num)) && isFinite(num);
+	};
+	$.isEmptyObject = function(obj){
+		var name;
+		for(var name in obj){
+			return false;
+		}
+		return true;
+	};
+	$.type = function(){
+		
+		var type = function (o){
+		  var s = Object.prototype.toString.call(o);
+		  return s.match(/\[object (.*?)\]/)[1].toLowerCase();
+		};
+	};
+	$.isRegExp = function(){
+		return $.type(o) === 'regexp';
+	}
 	Array.prototype.contains=function(e) {
 		if(e instanceof Array) {
 			for(var i=0;i<e.length;i++) {
