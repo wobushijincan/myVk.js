@@ -648,18 +648,6 @@
 				}
 			}
 			else {
-				var cs=this.eq(0).children();
-				if(cs.length>0){
-					var _index=index;
-					if(_index>cs.$.length-1) _index=cs.$.length-1;
-					var to=cs.$[_index];
-					for(var i=0;i<dom.length;i++)
-						this.$[0].insertBefore(dom[i],to);
-				}
-				else{
-					for(var i=0;i<dom.length;i++)
-						this.$[0].appendChild(dom[i]);
-				}
 				for(var i=1;i<this.$.length;i++) {
 					cs=this.eq(i).children();
 					if(cs.length>0){
@@ -1593,208 +1581,34 @@
 	$.prototype=function(name,value) {
 		if(!init.prototype[name]) init.prototype[name]=value;
 	};
-	$.ajax=function(para) {
-		if(!para)para={};
-		if(typeof (para.url)=='undefined')
-			para.url=window.location.href;
-		if(para.url==null) return;
-		var isOut=para.url.indexOf('://')> -1;
-		if(isOut||(para.dataType=='script'&&para.async!==false)) {
-			var hostname=isOut?para.url.split('://')[1].split(/\/|:/)[0]:"";
-			if(hostname!=window.location.hostname) {
-				var script=document.createElement('script');
-				script.type='text/javascript';script.src=para.url;
-				script.async='async';
-				if(para.charset) script.setAttribute('charset',para.charset);
-				if(typeof (para.loading)=='function') {
-					para.loading.call(para.context);
-				}
-				if(typeof (para.success)=='function') {
-					script.onload=script.onreadystatechange=function() {
-						if(!this.readyState||this.readyState=='loaded'||this.readyState=='complete')
-							para.success.call(para.context);
-					};
-				}
-				if(typeof (para.error)=='function') {
-					script.onerror=function() {
-						para.error.call(para.context);
-					};
-				}
-				$.head.append(script);
-				return this;
-			}
+	$.ajax=function(opt) {
+		opt = opt || {};
+        opt.method = opt.method.toUpperCase() || 'POST';
+        opt.url = opt.url || '';
+        opt.async = opt.async || true;
+        opt.data = opt.data || null;
+        opt.success = opt.success || function () {};
+        var xmlHttp = null;
+        xmlHttp=window.XMLHttpRequest ? new XMLHttpRequest : new ActiveObject("Microsoft.XMLHTTP");
+		var params = [];
+        for (var key in opt.data){
+            params.push(key + '=' + opt.data[key]);
+        }
+        var postData = params.join('&');
+        if (opt.method.toUpperCase() === 'POST') {
+            xmlHttp.open(opt.method, opt.url, opt.async);
+            xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;charset=utf-8');
+            xmlHttp.send(postData);
+        }
+        else if (opt.method.toUpperCase() === 'GET') {
+            xmlHttp.open(opt.method, opt.url + '?' + postData, opt.async);
+            xmlHttp.send(null);
+        } 
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                opt.success(xmlHttp.responseText);
+            }
 		}
-		if(para.file||para.form) {
-			var ifr=document.createElement('iframe');
-			$data.ajaxCount+=1;
-			ifr.name='$ajax_iframe_'+$data.ajaxCount;
-			ifr.id=ifr.name;
-			ifr.style.display='none';
-			$.body.append(ifr);
-			if(typeof (para.loading)=='function') {
-				para.loading.call(para.context);
-			}
-			if(typeof (para.success)=='function') {
-				ifr.onload=function() {
-					var data=null;
-					var html=this.contentWindow.document.getElementsByTagName('body')[0].innerHTML;
-					para.dataType=para.dataType||'html';
-					switch(para.dataType.toLowerCase()) {
-						case 'json':
-							{
-								if(html.length>0) {
-									var start=html.indexOf('{');
-									var last=html.lastIndexOf('}')+1;
-									var str=html.substring(start,last);
-									try { data=eval('('+str+')'); }
-									catch(e) { data=html; }
-								}
-								break;
-							}
-						case 'script':
-							{
-								if(html.length>0) {
-									var start=html.indexOf('{');
-									var last=html.lastIndexOf('}')+1;
-									var str=html.substring(start,last);
-									try {eval(str);}
-									catch(e) { }
-								}
-								break;
-							}
-						default:
-							{
-								data=html;
-								break;
-							}
-					}
-					para.success.call(para.context,data);
-					this.parentNode.removeChild(this);
-				};
-			}
-			if(typeof (para.error)=='function') {
-				ifr.onerror=function() {
-					para.error.call(para.context);
-				};
-			}
-			var form=para.form||para.file.form;
-			var _enctype=form.enctype, _method=form.method,_target=form.target,_action=form.action;
-			if(para.file){
-				form.enctype='multipart/form-data';
-				form.method='post';
-			}
-			form.target=ifr.name;
-			if(!form.action) form.action=window.location.href;
-			if(para.url)form.action=para.url;
-			form.submit();
-			form.enctype=_enctype;
-			form.method=_method;
-			form.target=_target;
-			form.action=_action;
-			return this;
-		}
-		para.type=para.type?para.type.toUpperCase():'GET';
-		para.charset=para.charset?para.charset:'UTF-8';
-		if(!para.contentType) para.contentType='text/html;charset='+para.charset;
-		if(typeof (para.async)=='undefined') para.async=true;
-		var xmlhttp=null;
-		if(window.XMLHttpRequest) xmlhttp=new XMLHttpRequest();
-		else {
-			try {
-				xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-			}
-			catch(e) {
-				xmlhttp=new ActiveXObject("Msxml2.XMLHTTP");
-			}
-		}
-		if(para.data) {
-			para.contentType='application/x-www-form-urlencoded;charset='+para.charset;
-			para.type='POST';
-			if(typeof (para.data)=='object') {
-				var _data='';
-				for(var key in para.data) {
-					if(para.data[key])
-						_data+=key+'='+encodeURIComponent(para.data[key])+'&';
-					else _data+=key+'=&';
-				}
-				_data=_data.substr(0,_data.length-1);
-				para.data=_data;
-			}
-		}
-		if(!para.cache) {
-			var now=new Date();
-			now='_='+now.getFullYear()+(now.getMonth()+1)+now.getDate()+now.getHours()+now.getMinutes()+now.getSeconds();
-			if(para.url.indexOf('?')> -1)
-				para.url+='&'+now;
-			else para.url+='?'+now;
-		}
-		xmlhttp.onreadystatechange=function() {
-			if(xmlhttp.readyState==2) {
-				if(typeof (para.loading)=='function') {
-					para.loading.call(para.context);
-				}
-			}
-			else if(xmlhttp.readyState==4) {
-				if(xmlhttp.status!=200) {
-					if(typeof (para.error)=='function') {
-						para.error.call(para.context);
-					}
-				}
-				else if(typeof (para.success)=='function') {
-					var request=null;
-					if(!para.dataType) {
-						var getType=xmlhttp.getResponseHeader("Content-Type");
-						if(getType) {
-							if(getType.indexOf('/json')) para.dataType='json';
-							else if(getType.indexOf('/javascript')) para.dataType='script';
-							else if(getType.indexOf('/xml')) para.dataType='xml';
-							else if(getType.indexOf('/html')) para.dataType='html';
-							else para.dataType='text';
-						}
-						else para.dataType='text';
-					}
-					switch(para.dataType.toLowerCase()) {
-						case 'json':
-							{
-								try {
-									request=eval('('+xmlhttp.responseText+')');
-								}
-								catch(e) { request=xmlhttp.responseText; }
-								break;
-							}
-						case 'script':
-							{
-								try {
-									eval(xmlhttp.responseText);
-								}
-								catch(e) { }
-								break;
-							}
-						case 'xml':
-							{
-								request=xmlhttp.responseXML;
-								break;
-							}
-						default:
-							{
-								request=xmlhttp.responseText;
-								break;
-							}
-					}
-					para.success.call(para.context,request);
-				}
-			}
-		};
-		xmlhttp.open(para.type,para.url,para.async);
-		if(para.type=='POST') xmlhttp.setRequestHeader('Content-Type',para.contentType);
-		xmlhttp.setRequestHeader('Accept','*/*');
-		if(para.dataType) xmlhttp.setRequestHeader('dataType',para.dataType);
-		try { xmlhttp.send(para.data); } catch(e) {
-			if(typeof (para.error)=='function') {
-				para.error.call(para.context);
-			}
-		}
-		return this;
 	};
 	function getStyle(dom,key) {
 		var value=window.getComputedStyle?window.getComputedStyle(dom,null)[key]:dom.currentStyle?dom.currentStyle[key]:dom.runtimeStyle?dom.runtimeStyle[key]:'';
@@ -1914,7 +1728,6 @@
 		return true;
 	};
 	$.type = function(){
-		
 		var type = function (o){
 		  var s = Object.prototype.toString.call(o);
 		  return s.match(/\[object (.*?)\]/)[1].toLowerCase();
