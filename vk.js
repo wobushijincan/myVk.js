@@ -1664,7 +1664,7 @@
 		var exp = new Date();
 		exp.setTime(exp.getTime() - 1);
 		var cval = getCookie(c_name);
-		if(){cval != null} document.cookie = c_name + '=' + cval + ';expiredays=' + exp.toGMTString();
+		if(cval != null){document.cookie = c_name + '=' + cval + ';expiredays=' + exp.toGMTString();} 
 	}
 	$.addRule=function(selector, rules, style, index) {
 		var cssRules=$.browser.core=='ms'?'rules':'cssRules';
