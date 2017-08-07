@@ -1647,7 +1647,7 @@
 	$.setCookie=function(c_name, value, expiredays) {
 		var exdate = new Date();
 		exdate.setDate(exdate.getDate() + expiredays);
-		document.cookie = c_name + '=' + escape(value) + ((expiredays == null) ? '' : ';expiredays=' + exdate.toGMTString());
+		document.cookie = c_name + '=' + escape(value) + ((expiredays == null) ? '' : ';expires=' + exdate.toGMTString());
 	};
 	$.getCookie = function(c_name,value){
 		if(document.cookie.length > 0){
@@ -1664,7 +1664,7 @@
 		var exp = new Date();
 		exp.setTime(exp.getTime() - 1);
 		var cval = getCookie(c_name);
-		if(cval != null){document.cookie = c_name + '=' + cval + ';expiredays=' + exp.toGMTString();} 
+		if(cval != null){document.cookie = c_name + '=' + cval + ';expires=' + exp.toGMTString();} 
 	}
 	$.addRule=function(selector, rules, style, index) {
 		var cssRules=$.browser.core=='ms'?'rules':'cssRules';

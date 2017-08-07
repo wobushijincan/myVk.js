@@ -203,6 +203,25 @@
 	//中断animate
 	//当type===0时继续animate; 
 	//当type===2时如果animate处于中断状态则继续animate, 否则中断, 切换两个状态.
+	
+	//vk.alert的用法
+	var addfriend_tip=document.createElement('div');
+	var tip_txt=vk("#tip_txt").html();
+	addfriend_tip.id="addfriend_tip";					
+	addfriend_tip.innerHTML='<div class="black_bg"><p class="timer"><span class="time_num">3</span>s跳过</p><div class="tip_btn"><img src="/templates/res/star/addfriend_tip_btn.png" /></div><div class="tip_crow"><img src="/templates/res/star/tip1.png" /></div><p class="titTxt">'+tip_txt+'</p></div><p class="tip_name">'+name+'</p>';
+	vk.alert({content:addfriend_tip,type:'notify', style:'clear ddfriend_tip',closeTime:4,context:this,complete:function(){
+		stars.qqchat(qqNumber);
+		switch(this.getAttribute('class')){
+			case 'qq':
+				page.statistic('QQ_'+name+'_'+page.getPageStr());
+				break;
+			case 'top_qq':
+				page.statistic('QQ_top_'+name);
+				break;
+			case 'bott_qq':
+				page.statistic('QQ_bottom_'+name);
+				break;		
+	}});
 
 ```
 
