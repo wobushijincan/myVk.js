@@ -236,7 +236,8 @@
 	$.isEmptyObject(obj);  //判断对象是否为空
 	$.type({}); // "object"  $.type([]); // "array"     $.type(/abcd/); // "regex"   $.type(new Date()); // "date"
 	$.isRegExp(/abcd/);  //专门判断某种类型
-	
+	arr.upsetArr1(); //数组顺序打乱1
+	arr.upsetArr2();  //数组顺序打乱2
 	
 	
 	

@@ -36,3 +36,59 @@ function changeById(destUrl, divid, invalue, lield){
 	var x = iget(diviv).cells(lield);
 	urlget(url, x);
 }
+
+var obj = {a: 1, arr: [2,3]};
+var shallowObj = shallowCopy(obj);
+
+function shallowCopy(src){
+	var dst = {};
+	for(var prop in src){
+		if(src.hasOwnProperty(prop)){
+			dst[prop] = src[prop];
+		}
+	}
+	return dst;
+}
+
+var china = {
+	nation: 'china',
+	birthplaces: ['shanghai', 'beijing', 'guangzhou'],
+	skinclor: 'yellow',
+	friends: ['sk', 'ls']
+}
+function deepCopy(o, c){
+	var c = c || {};
+	for(var i in o){
+		if(typeof o[i] == 'object'){
+			if(o[i].constructor == 'Array'){
+				c[i] = [];
+			}else{
+				c[i] = {};
+			}
+			deepCopy(o[i], c[i]);
+		}else{
+			c[i] = o[i];
+		}
+	}
+	return c;
+}
+
+var result = {name: 'result'};
+result = deepCopy(china, result);
+console.log(result);
+
+
+
+function extendCopy(p) {
+	var c = {};
+	for (var i in p) { 
+		c[i] = p[i];
+	}
+	c.uber = p;
+	return c;
+}
+
+
+
+
+

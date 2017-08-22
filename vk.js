@@ -1791,6 +1791,15 @@
 		}
 		return arr;
 	};
+	Array.prototype.upsetArr1 = function(){
+		var arr = this.slice(0);
+		return arr.sort(function(){ return Math.random() - 0.5});
+	};
+	Array.prototype.upsetArr2 = function(){
+		var arr = this.slice(0);
+		for(var j, x, i = arr.length; i; j = parseInt(Math.random() * i), x = arr[--i], arr[i] = arr[j], arr[j] = x);
+		return arr;
+	};
 	Array.prototype.insert=function(value,index) {
 		if(value instanceof Array==false) {
 			var type=typeof (value);
@@ -1837,6 +1846,9 @@
 	String.prototype.trimRight=function() {
 		return this.replace(/[\s]+$/gi,'');
 	};
+	String.prototype.randomOne = function(){
+		return arr[Math.floor(Math.random() * arr.length)];
+	}
 	String.prototype.changeCase = function(type){
 		var str = this;
 		this.ToggleCase = function(str){
